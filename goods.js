@@ -24,8 +24,7 @@ class List {
         this.render();
     }
     getAllProductSum() {
-        let res = this.allProducts.reduce((sum, good) => (sum += good.price), 0);
-        alert(res);
+        this.allProducts.reduce((sum, good) => (sum += good.price), 0);
     }
 
     render() {
@@ -73,7 +72,8 @@ class ProductsList extends List {
     _init() {
         document.querySelector(this.container).addEventListener("click", (el) => {
             if (el.target.classList.contains("buy-btn")) {
-                console.log(el.target);
+                //console.log(el.target);
+                this.cart.additemToCart(el.target);
             }
         });
     }
@@ -88,18 +88,69 @@ class Cart extends List {
             this.handleData(data.contents);
         });
     }
-    additemToCart() {}
-    deleteItemInCart() {}
-    changeItemInCart() {}
-    clearCart() {}
-    getCartPrice() {}
+    additemToCart(element) {
+        this.getJson(`${API}/addToBasket.json`).then((data) => {
+            if (data.result === 1) {
+                let productId = +element.dataset["id"];
+                let find = this.allProducts.find(
+                    (product) => product.id_product === productId
+                );
+                if (find) {
+                    find.quantity++;
+                    this._updateCart(find);
+                } else {
+                    let product = {
+                        id_product: productId,
+                        price: +element.dataset["price"],
+                        product_name: element.dataset["name"],
+                        quantity: 1,
+                    };
+                    this.goods = [product];
+                    this.render();
+                }
+            } else {
+                alert("Error");
+            }
+        });
+    }
+    deleteItemInCart(element) {
+        this.getJson(`${API}/deleteFromBasket.json`).then((data) => {
+            if (data.result === 1) {
+                let productId = +element.dataset["id"];
+                let find = this.allProducts.find(
+                    (product) => product.id_product === productId
+                );
+                if (find.quantity > 1) {
+                    find.quantity--;
+                    this._updateCart(find);
+                } else {
+                    this.allProducts.splice(this.allProducts.indexOf(find), 1);
+                    document.querySelector(`.cart-item[data-id="${productId}"]`).remove();
+                }
+            } else {
+                alert("Error");
+            }
+        });
+    }
+    _updateCart(product) {
+        let block = document.querySelector(
+            `.cart-item[data-id="${product.id_product}"]`
+        );
+        block.querySelector(
+            ".product-quantity"
+        ).textContent = `Quantity: ${product.quantity}`;
+        block.querySelector(".product-price").textContent = `$${
+      product.quantity * product.price
+    }`;
+    }
     _init() {
         document.querySelector(".btn-cart").addEventListener("click", () => {
             document.querySelector(this.container).classList.toggle("invisible");
         });
         document.querySelector(this.container).addEventListener("click", (el) => {
             if (el.target.classList.contains("del-btn")) {
-                console.log(el.target);
+                //console.log(el.target);
+                this.deleteItemInCart(el.target);
             }
         });
     }
