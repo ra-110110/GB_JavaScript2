@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>TextReplace</title>
+</head>
+
+<body>
+    <p id="text-container">
+        <h>One: 'Hi Mary.'</h>
+        <h>Two: 'Oh, hi.' </h>
+        <h>One: 'How are you doing?' </h>
+        <h>Two: 'I'm doing alright. How about you?' </h>
+        <h>One: 'Not too bad. The weather is great isn't it?' </h>
+        <h>Two: 'Yes. It's absolutely beautiful today.'</h>
+        <h>One: 'I wish it was like this more frequently.'</h>
+        <h>Two: 'Me too.' </h>
+        <h>One: 'So where are you going now?' </h>
+        <h>Two: 'I'm going to meet a friend of mine at the department store.' </h>
+        <h>One: 'Going to do a little shopping?' </h>
+        <h> Two: 'Yeah, I have to buy some presents for my parents.' </h>
+        <h>One: 'What's the occasion?' </h>
+        <h>Two: 'It's their anniversary.' </h>
+        <h>One: 'That's great. Well, you better get going. You don't want to be late.' </h>
+        <h>Two: 'I'll see you next time.'</h>
+        <h>One: 'Sure. Bye.'</h>
+    </p>
+    <button id='replace'>Изменить</button>
+    <script>
+        let block = document.getElementById('text-container')
+        document.getElementById('replace').addEventListener('click', () => {
+            //block.textContent = block.textContent.replace(/'/g, '"');
+            block.textContent = block.textContent.replace(/\B'|'\B/g, '"')
+        });
+    </script>
+</body>
+
+</html>
